@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HealthSurveyProv.Services
 {
-    public class SurveryRepository
+    public class SurveryRepository: ISurveyRepository
     {
         private readonly HealthContext _context;
         public virtual DbSet<SurveyAnswerViewModel> surveyAnswerViewModel { get; set; }
@@ -25,8 +25,7 @@ namespace HealthSurveyProv.Services
                 var Surveyanswer = _context.SurveyAnswers.FirstOrDefault(x => x.SurveyId == item.Id && x.SurveyQuestionId == item.QustionId);
                 Surveyanswer.Answervalue = item.AnswerValue;
                 Surveyanswer.SurveyId = item.Id;
-
-                _context.SurveyAnswers.Update(Surveyanswer);
+                _context.Entry(Surveyanswer).State = EntityState.Modified;
                 _context.SaveChanges();
 
             }
@@ -38,21 +37,23 @@ namespace HealthSurveyProv.Services
 
         public List<SurveyAnswerViewModel> GetSurveyQuestionsAndAnswers(int Id)
         {
-            var surveyAnswerViewModel = new List<SurveyAnswerViewModel>();
+            return _context.SurveyQuestionsAndAnswers.FromSqlRaw("exec [dbo].[spGetSurveyQuestionsAndAnswers] {0}", Id).ToList();
 
-            var surveyQustionAndAnswers = _context.SurveyAnswers.FromSqlRaw("exec [dbo].[spGetSurveyQuestionsAndAnswers] {0}", Id);
-            foreach (var item in surveyQustionAndAnswers)
-            {
-                surveyAnswerViewModel.Add(new SurveyAnswerViewModel()
-                {
-                    SurveyID = item.SurveyId,
-                    AnswerValue = item.Answervalue,
-                    QuestionPhrase = item.SurveyQuestion.QuestionPhrase
+            //var surveyAnswerViewModel = new List<SurveyAnswerViewModel>();
 
-                });
-            }
-              
-            return surveyAnswerViewModel;
+            //var surveyQustionAndAnswers = _context.SurveyAnswers.FromSqlRaw("exec [dbo].[spGetSurveyQuestionsAndAnswers] {0}", Id).ToList();
+            //foreach (var item in surveyQustionAndAnswers)
+            //{
+            //    surveyAnswerViewModel.Add(new SurveyAnswerViewModel()
+            //    {
+            //        SurveyID = item.SurveyId,
+            //        AnswerValue = item.Answervalue,
+            //        QuestionPhrase = item.SurveyQuestion.QuestionPhrase
+
+
+            //    });
+            //}
+
         }
             
         
@@ -75,8 +76,8 @@ namespace HealthSurveyProv.Services
         public List<SurveyQuestionViewModel> GetSurveyQuestions(int Id)
         {
             List<SurveyQuestionViewModel> surveyQuestionsViewModels = new List<SurveyQuestionViewModel>();
-            var x = _context.SurveyAnswers.Include(x => x.SurveyQuestion).Where(x => x.SurveyId == Id).Select(x => x.SurveyQuestion).ToList();
-            foreach (var item in x)
+            var surveryAnswers = _context.SurveyAnswers.Include(x => x.SurveyQuestion).Where(x => x.SurveyId == Id).Select(x => x.SurveyQuestion).ToList();
+            foreach (var item in surveryAnswers)
             {
                 var surveyquestion = new SurveyQuestionViewModel();
                 surveyquestion.QuestionPhrase = item.QuestionPhrase;

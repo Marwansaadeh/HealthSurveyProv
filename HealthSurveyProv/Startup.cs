@@ -1,4 +1,5 @@
 using HealthSurveyProv.Models;
+using HealthSurveyProv.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +28,8 @@ namespace HealthSurveyProv
         {
             services.AddDbContext<HealthContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddTransient<ISurveyRepository, SurveryRepository>();
+
             services.AddControllersWithViews();
         }
 

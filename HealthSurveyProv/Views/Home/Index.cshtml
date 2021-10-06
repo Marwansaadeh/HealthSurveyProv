@@ -1,8 +1,98 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model HealthSurveyProv.ViewModels.SurveyViewModel
+<div class="callout callout-info">
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <span class="text-success">@Model.SucessMessage</span>
+    <form asp-controller="Home" asp-action="Index" method="post" role="form">
+
+        <div class="card-body">
+
+            <div class="form-group">
+                <input asp-for="@Model.SurveyHealthViewModel.Id" type="hidden" value="@Model.SurveyHealthViewModel.Id" class="form-control">
+
+                <label asp-for="@Model.SurveyHealthViewModel.CreatedDate">Date:@Model.SurveyHealthViewModel.CreatedDate</label>
+
+                <input asp-for="@Model.SurveyHealthViewModel.SubmitDate" value="@DateTime.Now" type="hidden" class="form-control">
+
+            </div>
+            @if (Model.SurveyQuestionViewModel.Any())
+            {
+                <center>Survey Questions</center>
+                @for (int i = 0; i < @Model.SurveyQuestionViewModel.Count; i++)
+                {
+
+                    if (Model.SurveyQuestionViewModel[i].QuestionType == "Yes/No")
+                    {
+                        <div class="form-group">
+                            <input asp-for="@Model.SurveyQuestionViewModel[i].Id" type="hidden" class="form-control">
+                            <input asp-for="@Model.SurveyQuestionViewModel[i].QustionId" type="hidden" class="form-control">
+
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="@Model.SurveyQuestionViewModel[i].QuestionPhrase">@Model.SurveyQuestionViewModel[i].QuestionPhrase</label>
+                            <input asp-for="@Model.SurveyQuestionViewModel[i].QuestionPhrase" value="@Model.SurveyQuestionViewModel[i].QuestionPhrase" type="hidden" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+                            <label class="labeltext">@Model.SurveyQuestionViewModel[i].AnswerValue</label>
+
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" asp-for="@Model.SurveyQuestionViewModel[i].AnswerValue" id="inlineRadio1" value="Yes">
+                                <label class="form-check-label" for="inlineRadio1">Yes</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" asp-for="@Model.SurveyQuestionViewModel[i].AnswerValue" id="inlineRadio2" value="No">
+                                <label class="form-check-label" for="inlineRadio2">No</label>
+                            </div>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <div class="form-group">
+                            <input asp-for="@Model.SurveyQuestionViewModel[i].Id" type="hidden" class="form-control">
+                            <input asp-for="@Model.SurveyQuestionViewModel[i].QustionId" type="hidden" value="@Model.SurveyQuestionViewModel[i].QustionId" class="form-control">
+
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="@Model.SurveyQuestionViewModel[i].QuestionPhrase">@Model.SurveyQuestionViewModel[i].QuestionPhrase</label>
+                            <input asp-for="@Model.SurveyQuestionViewModel[i].QuestionPhrase" value="@Model.SurveyQuestionViewModel[i].QuestionPhrase" type="hidden" class="form-control">
+
+                        </div>
+
+
+                        <div class="form-group">
+                            <input asp-for="@Model.SurveyQuestionViewModel[i].AnswerValue">
+                            <br />
+                            <span asp-validation-for="@Model.SurveyQuestionViewModel[i].AnswerValue" class="text-danger"></span>
+                        </div>
+                    }
+
+                }
+            }
+            @if (Model.SurveyAnswerViewModels.Any())
+            {
+                @foreach (var answer in Model.SurveyAnswerViewModels)
+                {
+                    
+                    if (answer.AnswerValue == null)
+                    {
+                        answer.AnswerValue = "no answer";
+                    }
+                  
+                    <div class="form-group">
+                        <label>@answer.QuestionPhrase</label><br />
+                        <label>@answer.AnswerValue</label>
+                    </div>
+                }
+            }
+            @if (Model.SurveyQuestionViewModel.Any())
+            {
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+
+            }
+        </div>
+    </form>
 </div>

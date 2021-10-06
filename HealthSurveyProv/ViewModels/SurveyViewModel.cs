@@ -8,7 +8,7 @@ namespace HealthSurveyProv.ViewModels
     public class SurveyViewModel
     {
         public List<SurveyAnswerViewModel> SurveyAnswerViewModels { get; set; }
-        public SurveyHealthViewModel Survey { get; set; }
+        public SurveyHealthViewModel SurveyHealthViewModel { get; set; }
         public List<SurveyQuestionViewModel> SurveyQuestionViewModel { get; set; }
         public string SucessMessage { get; set; }
     }

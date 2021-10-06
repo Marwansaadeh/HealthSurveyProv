@@ -1,4 +1,5 @@
 ﻿using System;
+using HealthSurveyProv.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +23,8 @@ namespace HealthSurveyProv.Models
         public virtual DbSet<Survey> Surveys { get; set; }
         public virtual DbSet<SurveyAnswer> SurveyAnswers { get; set; }
         public virtual DbSet<SurveyQuestion> SurveyQuestions { get; set; }
+        public virtual DbSet<SurveyAnswerViewModel> SurveyQuestionsAndAnswers { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -37,16 +40,42 @@ namespace HealthSurveyProv.Models
         {
             modelBuilder.HasAnnotation("Relational:Collation", "Finnish_Swedish_CI_AS");
 
+            modelBuilder.Entity<Setting>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.SurveyHeaderText).HasMaxLength(4000);
+
+                entity.Property(e => e.SurveyfooterText).HasMaxLength(4000);
+            });
+
             modelBuilder.Entity<Survey>(entity =>
             {
-                entity.Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
+                entity.ToTable("Survey");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.SubmitDate).HasColumnType("datetime");
+
+                entity.Property(e => e.SurveyRnd).HasColumnName("SurveyRND");
             });
 
             modelBuilder.Entity<SurveyAnswer>(entity =>
             {
-                entity.Property(e => e.Answervalue).IsUnicode(false);
+
+                entity.Property(e => e.Answervalue)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+                entity.HasKey(x => x.Id);
+                entity.Property(e => e.SurveyId).HasColumnName("SurveyID");
+
+                entity.Property(e => e.SurveyQuestionId).HasColumnName("SurveyQuestionID");
 
                 entity.HasOne(d => d.Survey)
                     .WithMany()
@@ -62,12 +91,24 @@ namespace HealthSurveyProv.Models
 
             modelBuilder.Entity<SurveyQuestion>(entity =>
             {
-                entity.Property(e => e.QuestionType).IsUnicode(false);
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.QuestionPhrase).HasMaxLength(4000);
+
+                entity.Property(e => e.QuestionType)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
+            modelBuilder.Entity<SurveyAnswerViewModel>(entity =>
+            {
+                entity.HasNoKey();
+                entity.Property(e => e.SurveyID);
+                entity.Property(e => e.QuestionPhrase);
+                entity.Property(e => e.AnswerValue);
 
-            OnModelCreatingPartial(modelBuilder);
+
+            });
         }
-
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }
