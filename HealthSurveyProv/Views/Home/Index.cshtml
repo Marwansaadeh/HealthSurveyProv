@@ -10,6 +10,7 @@
                 <input asp-for="@Model.SurveyHealthViewModel.Id" type="hidden" value="@Model.SurveyHealthViewModel.Id" class="form-control">
 
                 <label asp-for="@Model.SurveyHealthViewModel.CreatedDate">Date:@Model.SurveyHealthViewModel.CreatedDate</label>
+                <input asp-for="@Model.SurveyHealthViewModel.CreatedDate" type="hidden" class="form-control">
 
                 <input asp-for="@Model.SurveyHealthViewModel.SubmitDate" value="@DateTime.Now" type="hidden" class="form-control">
 
@@ -22,11 +23,12 @@
 
                     if (Model.SurveyQuestionViewModel[i].QuestionType == "Yes/No")
                     {
-                        <div class="form-group">
-                            <input asp-for="@Model.SurveyQuestionViewModel[i].Id" type="hidden" class="form-control">
-                            <input asp-for="@Model.SurveyQuestionViewModel[i].QustionId" type="hidden" class="form-control">
+        <div class="form-group">
+            <input asp-for="@Model.SurveyQuestionViewModel[i].Id" type="hidden" class="form-control">
+            <input asp-for="@Model.SurveyQuestionViewModel[i].QustionId" type="hidden" class="form-control">
+            <input asp-for="@Model.SurveyQuestionViewModel[i].QuestionType" type="hidden" class="form-control">
 
-                        </div>
+        </div>
                         <div class="form-group">
                             <label asp-for="@Model.SurveyQuestionViewModel[i].QuestionPhrase">@Model.SurveyQuestionViewModel[i].QuestionPhrase</label>
                             <input asp-for="@Model.SurveyQuestionViewModel[i].QuestionPhrase" value="@Model.SurveyQuestionViewModel[i].QuestionPhrase" type="hidden" class="form-control">

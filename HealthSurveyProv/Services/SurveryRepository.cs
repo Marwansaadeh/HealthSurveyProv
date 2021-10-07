@@ -11,8 +11,6 @@ namespace HealthSurveyProv.Services
     public class SurveryRepository: ISurveyRepository
     {
         private readonly HealthContext _context;
-        public virtual DbSet<SurveyAnswerViewModel> surveyAnswerViewModel { get; set; }
-
         public SurveryRepository(HealthContext context)
         {
             _context = context;
@@ -56,8 +54,6 @@ namespace HealthSurveyProv.Services
 
         }
             
-        
-
 
         public SurveyHealthViewModel SetSurvey()
         {

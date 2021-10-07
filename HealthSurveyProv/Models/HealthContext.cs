@@ -25,7 +25,6 @@ namespace HealthSurveyProv.Models
         public virtual DbSet<SurveyQuestion> SurveyQuestions { get; set; }
         public virtual DbSet<SurveyAnswerViewModel> SurveyQuestionsAndAnswers { get; set; }
 
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
@@ -108,6 +107,7 @@ namespace HealthSurveyProv.Models
 
 
             });
+            OnModelCreatingPartial(modelBuilder);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
